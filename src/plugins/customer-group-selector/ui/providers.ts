@@ -1,6 +1,9 @@
-import { registerFormInputComponent } from "@vendure/ui-devkit/compiler";
-import { CustomerGroupSelector } from "./components/CustomerGroupSelector";
+import { registerReactFormInputComponent } from "@vendure/admin-ui/react";
+import { CustomerGroupSelector } from "./components/CustomerGroupSelector.tsx";
 
 export default [
-  registerFormInputComponent("customer-group-selector", CustomerGroupSelector),
+  registerReactFormInputComponent(
+    "customer-group-selector",
+    CustomerGroupSelector
+  ),
 ];

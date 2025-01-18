@@ -1,3 +1,4 @@
+import { compileUiExtensions } from "@vendure/ui-devkit/compiler";
 import {
   dummyPaymentHandler,
   DefaultJobQueuePlugin,
@@ -17,6 +18,7 @@ import "dotenv/config";
 import path from "path";
 import { paytrailPaymentHandler } from "./plugins/paytrail-payment/paytrail-payment";
 import { CreditBalancePlugin } from "./plugins/credit-balance/credit-balance.plugin";
+import { CustomerGroupSelectorPlugin } from "./plugins/customer-group-selector/customer-group-selector.plugin";
 
 const IS_DEV = process.env.APP_ENV === "dev";
 const serverPort = +process.env.PORT || 3000;
@@ -120,6 +122,11 @@ export const config: VendureConfig = {
       adminUiConfig: {
         apiPort: serverPort,
       },
+      app: compileUiExtensions({
+        outputPath: path.join(__dirname, "../admin-ui"),
+        extensions: [CustomerGroupSelectorPlugin.ui],
+        devMode: true,
+      }),
     }),
     CreditBalancePlugin.init(),
   ],

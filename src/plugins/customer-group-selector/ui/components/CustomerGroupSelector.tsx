@@ -1,30 +1,18 @@
 import React from "react";
-import {
-  useFormControl,
-  ReactFormInputOptions,
-  useInjector,
-} from "@vendure/admin-ui/react";
+import { useFormControl, ReactFormInputOptions } from "@vendure/admin-ui/react";
 
-export function CustomerGroupSelector({
-  readonly,
-  config,
-}: ReactFormInputOptions) {
+export function CustomerGroupSelector({ readonly }: ReactFormInputOptions) {
   const { value, setFormValue } = useFormControl();
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = +e.target.value;
-    setFormValue(val);
-  };
+
   return (
-    <>
-      <input
-        type="range"
-        readOnly={readonly}
-        min={config.min || 0}
-        max={config.max || 100}
-        value={value}
-        onChange={handleChange}
-      />
-      {value}
-    </>
+    <select
+      value={value || ""}
+      onChange={(e) => setFormValue(e.target.value)}
+      disabled={readonly}
+    >
+      <option value="">Select a customer group</option>
+      <option value="1">Retail</option>
+      <option value="2">Wholesale</option>
+    </select>
   );
 }
