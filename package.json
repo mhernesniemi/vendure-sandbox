@@ -1,0 +1,30 @@
+{
+  "name": "vendure-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev:server": "ts-node ./src/index.ts",
+    "dev:worker": "ts-node ./src/index-worker.ts",
+    "dev": "concurrently npm:dev:*",
+    "build": "tsc",
+    "start:server": "node ./dist/index.js",
+    "start:worker": "node ./dist/index-worker.js",
+    "start": "concurrently npm:start:*"
+  },
+  "dependencies": {
+    "@paytrail/paytrail-js-sdk": "^1.0.3",
+    "@vendure/admin-ui": "^3.1.1",
+    "@vendure/admin-ui-plugin": "^3.1.1",
+    "@vendure/asset-server-plugin": "3.1.1",
+    "@vendure/core": "3.1.1",
+    "@vendure/email-plugin": "3.1.1",
+    "better-sqlite3": "9.6.0",
+    "dotenv": "16.4.7"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.7",
+    "@vendure/cli": "3.1.1",
+    "concurrently": "9.1.1",
+    "typescript": "5.7.2"
+  }
+}
