@@ -14,6 +14,10 @@ import { AdminUiPlugin } from "@vendure/admin-ui-plugin";
 import "dotenv/config";
 import path from "path";
 import { ElasticsearchPlugin } from "@vendure/elasticsearch-plugin";
+import { generateFacetMappings } from "./elastic-search/facet-mappings";
+
+// Define the indexed facet types here
+const INDEXED_FACETS = ["brand", "category", "color"];
 
 const IS_DEV = process.env.APP_ENV === "dev";
 const serverPort = +process.env.PORT || 3000;
@@ -103,84 +107,10 @@ export const config: VendureConfig = {
       host: "http://localhost",
       port: 9200,
       customProductMappings: {
-        category: {
-          graphQlType: "[String!]",
-          valueFn: (product, variants, languageCode, injector, ctx) => {
-            const facetValues = product.facetValues || [];
-            const categoryValues: string[] = [];
-
-            facetValues.forEach((fv) => {
-              if (fv.facet?.code === "category") {
-                const value =
-                  fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
-                if (value) {
-                  categoryValues.push(value);
-                }
-              }
-            });
-
-            return categoryValues;
-          },
-        },
-        brand: {
-          graphQlType: "[String!]",
-          valueFn: (product, variants, languageCode, injector, ctx) => {
-            const facetValues = product.facetValues || [];
-            const brandValues: string[] = [];
-
-            facetValues.forEach((fv) => {
-              if (fv.facet?.code === "brand") {
-                const value =
-                  fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
-                if (value) {
-                  brandValues.push(value);
-                }
-              }
-            });
-
-            return brandValues;
-          },
-        },
+        ...generateFacetMappings(INDEXED_FACETS, false),
       },
       customProductVariantMappings: {
-        category: {
-          graphQlType: "[String!]",
-          valueFn: (variant, languageCode, injector, ctx) => {
-            const facetValues = variant.facetValues || [];
-            const categoryValues: string[] = [];
-
-            facetValues.forEach((fv) => {
-              if (fv.facet?.code === "category") {
-                const value =
-                  fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
-                if (value) {
-                  categoryValues.push(value);
-                }
-              }
-            });
-
-            return categoryValues;
-          },
-        },
-        brand: {
-          graphQlType: "[String!]",
-          valueFn: (variant, languageCode, injector, ctx) => {
-            const facetValues = variant.facetValues || [];
-            const brandValues: string[] = [];
-
-            facetValues.forEach((fv) => {
-              if (fv.facet?.code === "brand") {
-                const value =
-                  fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
-                if (value) {
-                  brandValues.push(value);
-                }
-              }
-            });
-
-            return brandValues;
-          },
-        },
+        ...generateFacetMappings(INDEXED_FACETS, true),
       },
       hydrateProductRelations: ["facetValues.facet"],
       hydrateProductVariantRelations: ["facetValues.facet"],
