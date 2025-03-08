@@ -103,34 +103,42 @@ export const config: VendureConfig = {
       host: "http://localhost",
       port: 9200,
       customProductMappings: {
-        facetValueData: {
-          graphQlType: "String!",
+        category: {
+          graphQlType: "[String!]",
           valueFn: (product, variants, languageCode, injector, ctx) => {
             const facetValues = product.facetValues || [];
-            const facetGroups: Record<string, string[]> = {};
-
-            console.log(
-              "Product facet values:",
-              JSON.stringify(facetValues, null, 2)
-            );
+            const categoryValues: string[] = [];
 
             facetValues.forEach((fv) => {
-              if (fv.facet?.code) {
-                const facetCode = fv.facet.code.toLowerCase();
-                if (!facetGroups[facetCode]) {
-                  facetGroups[facetCode] = [];
-                }
-
-                let value =
+              if (fv.facet?.code === "category") {
+                const value =
                   fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
-
                 if (value) {
-                  facetGroups[facetCode].push(value);
+                  categoryValues.push(value);
                 }
               }
             });
 
-            return JSON.stringify(facetGroups);
+            return categoryValues;
+          },
+        },
+        brand: {
+          graphQlType: "[String!]",
+          valueFn: (product, variants, languageCode, injector, ctx) => {
+            const facetValues = product.facetValues || [];
+            const brandValues: string[] = [];
+
+            facetValues.forEach((fv) => {
+              if (fv.facet?.code === "brand") {
+                const value =
+                  fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
+                if (value) {
+                  brandValues.push(value);
+                }
+              }
+            });
+
+            return brandValues;
           },
         },
         facetSlugs: {
@@ -156,34 +164,42 @@ export const config: VendureConfig = {
         },
       },
       customProductVariantMappings: {
-        facetValueData: {
-          graphQlType: "String!",
+        category: {
+          graphQlType: "[String!]",
           valueFn: (variant, languageCode, injector, ctx) => {
             const facetValues = variant.facetValues || [];
-            const facetGroups: Record<string, string[]> = {};
-
-            console.log(
-              "Variant facet values:",
-              JSON.stringify(facetValues, null, 2)
-            );
+            const categoryValues: string[] = [];
 
             facetValues.forEach((fv) => {
-              if (fv.facet?.code) {
-                const facetCode = fv.facet.code.toLowerCase();
-                if (!facetGroups[facetCode]) {
-                  facetGroups[facetCode] = [];
-                }
-
-                let value =
+              if (fv.facet?.code === "category") {
+                const value =
                   fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
-
                 if (value) {
-                  facetGroups[facetCode].push(value);
+                  categoryValues.push(value);
                 }
               }
             });
 
-            return JSON.stringify(facetGroups);
+            return categoryValues;
+          },
+        },
+        brand: {
+          graphQlType: "[String!]",
+          valueFn: (variant, languageCode, injector, ctx) => {
+            const facetValues = variant.facetValues || [];
+            const brandValues: string[] = [];
+
+            facetValues.forEach((fv) => {
+              if (fv.facet?.code === "brand") {
+                const value =
+                  fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
+                if (value) {
+                  brandValues.push(value);
+                }
+              }
+            });
+
+            return brandValues;
           },
         },
         facetSlugs: {
