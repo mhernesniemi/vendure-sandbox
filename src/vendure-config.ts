@@ -102,6 +102,82 @@ export const config: VendureConfig = {
     ElasticsearchPlugin.init({
       host: "http://localhost",
       port: 9200,
+      customProductMappings: {
+        facetValueData: {
+          graphQlType: "String!",
+          valueFn: (product, variants, languageCode, injector, ctx) => {
+            const facetValues = product.facetValues || [];
+            const data = facetValues.map((fv) => ({
+              id: fv.id,
+              name: fv.name,
+              slug: fv.code,
+              facetId: fv.facet?.id,
+              facetName: fv.facet?.name,
+            }));
+            return JSON.stringify(data);
+          },
+        },
+        facetSlugs: {
+          graphQlType: "String!",
+          valueFn: (product, variants, languageCode, injector, ctx) => {
+            const facetValues = product.facetValues || [];
+            const facetSet = new Set<string>();
+            facetValues.forEach((fv) => {
+              if (fv.facet?.code) {
+                facetSet.add(fv.facet.code);
+              }
+            });
+            return JSON.stringify(Array.from(facetSet));
+          },
+        },
+        facetValueSlugs: {
+          graphQlType: "String!",
+          valueFn: (product, variants, languageCode, injector, ctx) => {
+            const facetValues = product.facetValues || [];
+            const slugs = facetValues.map((fv) => fv.code).filter(Boolean);
+            return JSON.stringify(slugs);
+          },
+        },
+      },
+      customProductVariantMappings: {
+        facetValueData: {
+          graphQlType: "String!",
+          valueFn: (variant, languageCode, injector, ctx) => {
+            const facetValues = variant.facetValues || [];
+            const data = facetValues.map((fv) => ({
+              id: fv.id,
+              name: fv.name,
+              slug: fv.code,
+              facetId: fv.facet?.id,
+              facetName: fv.facet?.name,
+            }));
+            return JSON.stringify(data);
+          },
+        },
+        facetSlugs: {
+          graphQlType: "String!",
+          valueFn: (variant, languageCode, injector, ctx) => {
+            const facetValues = variant.facetValues || [];
+            const facetSet = new Set<string>();
+            facetValues.forEach((fv) => {
+              if (fv.facet?.code) {
+                facetSet.add(fv.facet.code);
+              }
+            });
+            return JSON.stringify(Array.from(facetSet));
+          },
+        },
+        facetValueSlugs: {
+          graphQlType: "String!",
+          valueFn: (variant, languageCode, injector, ctx) => {
+            const facetValues = variant.facetValues || [];
+            const slugs = facetValues.map((fv) => fv.code).filter(Boolean);
+            return JSON.stringify(slugs);
+          },
+        },
+      },
+      hydrateProductRelations: ["facetValues.facet"],
+      hydrateProductVariantRelations: ["facetValues.facet"],
     }),
   ],
 };
