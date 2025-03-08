@@ -107,14 +107,30 @@ export const config: VendureConfig = {
           graphQlType: "String!",
           valueFn: (product, variants, languageCode, injector, ctx) => {
             const facetValues = product.facetValues || [];
-            const data = facetValues.map((fv) => ({
-              id: fv.id,
-              name: fv.name,
-              slug: fv.code,
-              facetId: fv.facet?.id,
-              facetName: fv.facet?.name,
-            }));
-            return JSON.stringify(data);
+            const facetGroups: Record<string, string[]> = {};
+
+            console.log(
+              "Product facet values:",
+              JSON.stringify(facetValues, null, 2)
+            );
+
+            facetValues.forEach((fv) => {
+              if (fv.facet?.code) {
+                const facetCode = fv.facet.code.toLowerCase();
+                if (!facetGroups[facetCode]) {
+                  facetGroups[facetCode] = [];
+                }
+
+                let value =
+                  fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
+
+                if (value) {
+                  facetGroups[facetCode].push(value);
+                }
+              }
+            });
+
+            return JSON.stringify(facetGroups);
           },
         },
         facetSlugs: {
@@ -144,14 +160,30 @@ export const config: VendureConfig = {
           graphQlType: "String!",
           valueFn: (variant, languageCode, injector, ctx) => {
             const facetValues = variant.facetValues || [];
-            const data = facetValues.map((fv) => ({
-              id: fv.id,
-              name: fv.name,
-              slug: fv.code,
-              facetId: fv.facet?.id,
-              facetName: fv.facet?.name,
-            }));
-            return JSON.stringify(data);
+            const facetGroups: Record<string, string[]> = {};
+
+            console.log(
+              "Variant facet values:",
+              JSON.stringify(facetValues, null, 2)
+            );
+
+            facetValues.forEach((fv) => {
+              if (fv.facet?.code) {
+                const facetCode = fv.facet.code.toLowerCase();
+                if (!facetGroups[facetCode]) {
+                  facetGroups[facetCode] = [];
+                }
+
+                let value =
+                  fv.code || fv.name || (fv.id ? String(fv.id) : undefined);
+
+                if (value) {
+                  facetGroups[facetCode].push(value);
+                }
+              }
+            });
+
+            return JSON.stringify(facetGroups);
           },
         },
         facetSlugs: {
